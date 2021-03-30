@@ -8,7 +8,7 @@ from datetime import datetime
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Jameskis13!Kaleo432!",
+    pw:
     database = "Cookies"
 )
 
