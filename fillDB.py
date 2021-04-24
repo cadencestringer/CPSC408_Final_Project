@@ -4,9 +4,9 @@ import genData as gd
 
 # Connect to the database in GCP
 db = mysql.connector.connect(
-    host="35.235.87.251", # updated
-    user="cookies_user",
-    password="gloopybloopy",
+    host="localhost", # updated
+    user="root",
+    password="Jameskis13!Kaleo432!",
     database="Cookies"
 )
 mycursor = db.cursor()
@@ -53,9 +53,9 @@ def importOrderDetails(fileName):
     with open(fileName) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            mycursor.execute('INSERT INTO OrderDetails(orderID, cookieID, quantity, price, deleted)'
-                             'VALUES (%s,%s,%s,%s,%s);',
-                             (row['orderID'], row['cookieID'], row['quantity'], row['price'], row['deleted']))
+            mycursor.execute('INSERT INTO OrderDetails(orderID, cookieID, quantity, deleted)'
+                             'VALUES (%s,%s,%s,%s);',
+                             (row['orderID'], row['cookieID'], row['quantity'], row['deleted']))
             db.commit()
 
 # Imports all data into the database

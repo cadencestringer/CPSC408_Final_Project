@@ -88,14 +88,13 @@ def genStores():
 def genOrderDetails():
     order_details_data = open(order_details_file_name, 'w')
     writer = csv.writer(order_details_data)
-    writer.writerow(['orderID', 'cookieID', 'quantity', 'price', 'deleted'])
+    writer.writerow(['orderID', 'cookieID', 'quantity', 'deleted'])
 
     for i in range(0, order_details_nrows):
         orderID = random.randrange(1, (customer_order_nrows+1))
         cookieID = random.randrange(1, 8)
         quantity = random.randrange(1, 11)  # they can only buy up to 10 cookies
-        price = quantity * 5
-        writer.writerow([orderID, cookieID, quantity, price, 0])
+        writer.writerow([orderID, cookieID, quantity, 0])
 
 # Generates a random date between January 1st 2020 and February 1st 2020 for the purchase date
 def randDate():

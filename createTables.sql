@@ -1,4 +1,6 @@
-#CREATE DATABASE Cookies;
+CREATE DATABASE Cookies;
+
+USE Cookies;
 
 DROP TABLE OrderDetails;
 DROP TABLE CustomerOrder;
@@ -52,7 +54,6 @@ CREATE TABLE OrderDetails
     orderID  INT UNSIGNED             NOT NULL,
     cookieID TINYINT UNSIGNED         NOT NULL,
     quantity TINYINT UNSIGNED         NOT NULL,
-    price    FLOAT(5, 2)              NOT NULL,
     deleted  BOOLEAN                  NOT NULL,
     FOREIGN KEY (orderID)
         REFERENCES CustomerOrder (orderID),
