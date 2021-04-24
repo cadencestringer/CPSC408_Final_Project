@@ -61,6 +61,22 @@ CREATE TABLE OrderDetails
         REFERENCES Cookie (cookieID)
 );
 
+
+CREATE INDEX Cookie_cookieID_index
+ on Cookie (cookieID);
+
+CREATE INDEX Customer_customerID_index
+ on Customer (customerID);
+
+CREATE INDEX CustomerOrder_orderID_index
+ on CustomerOrder (orderID);
+
+CREATE INDEX OrderDetails_detailID_index
+ on OrderDetails (detailID);
+
+CREATE INDEX Store_storeID_index
+ on Store (storeID);
+
 # DROP INDEX Cookie_cookieID_index on Cookie;
 # DROP INDEX Customer_customerID_index on Customer;
 # DROP INDEX CustomerOrder_orderID_index on CustomerOrder;
