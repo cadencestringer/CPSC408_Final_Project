@@ -60,3 +60,12 @@ CREATE TABLE OrderDetails
     FOREIGN KEY (cookieID)
         REFERENCES Cookie (cookieID)
 );
+
+# DROP INDEX Cookie_cookieID_index on Cookie;
+# DROP INDEX Customer_customerID_index on Customer;
+# DROP INDEX CustomerOrder_orderID_index on CustomerOrder;
+# DROP INDEX OrderDetails_detailID_index on OrderDetails;
+# DROP INDEX Store_storeID_index on Store;
+#
+# INSERT INTO Cookie (flavor,cost,deleted) VALUES('chocolate', 5,0);
+
