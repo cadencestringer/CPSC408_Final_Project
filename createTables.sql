@@ -77,6 +77,8 @@ CREATE INDEX OrderDetails_detailID_index
 CREATE INDEX Store_storeID_index
  on Store (storeID);
 
+CREATE VIEW Customer_Metrics AS SELECT sex, age FROM Customer;
+
 # DROP INDEX Cookie_cookieID_index on Cookie;
 # DROP INDEX Customer_customerID_index on Customer;
 # DROP INDEX CustomerOrder_orderID_index on CustomerOrder;
