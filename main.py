@@ -361,44 +361,53 @@ def addOrder():  # make sure the store exists, make sure the customer exists, ma
 
 def get_total_sales(filterBy):
     if filterBy == 'all':
-        mycursor.execute("SELECT Sum(quantity*5) AS total_sales FROM OrderDetails "
-                         "WHERE deleted = 0 ;")
+        mycursor.execute("SELECT sum(sub.net_sales) as net_sales "
+                         "from (SELECT DISTINCT OD.cookieID, "
+                         "sum(OD.quantity * 5) - sum(OD.quantity * C.cost) as net_sales "
+                         "from OrderDetails OD "
+                         "left join Cookie C on OD.cookieID = C.cookieID "
+                         "where OD.deleted = 0 "
+                         "and C.deleted = 0 "
+                         "GROUP BY 1) as sub "
+                         "WHERE deleted = 0;")
     elif filterBy == 'store':
-        mycursor.execute("SELECT DISTINCT s.name AS store_name, SUM(5*od.quantity) AS total_sales "
-                         "FROM Store AS s LEFT JOIN CustomerOrder AS co ON co.storeID= s.storeID "
-                         "LEFT JOIN OrderDetails AS od ON od.orderID = co.orderID "
-                         "WHERE od.deleted = 0 "
-                         "AND co.deleted = 0 "
-                         "AND s.deleted = 0 "
-                         "GROUP BY 1 ORDER BY 1;")
+        mycursor.execute("SELECT DISTINCT sub.store_name, sum(sub.net_sales) as net_sales "
+                         "from (SELECT DISTINCT OD.cookieID, S.name as store_name, "
+                         "sum(OD.quantity * 5) - sum(OD.quantity * C.cost) as net_sales "
+                         "from OrderDetails OD "
+                         "left join Cookie C on OD.cookieID = C.cookieID "
+                         "left join CustomerOrder CO on OD.orderID = CO.orderID "
+                         "left join Store S on CO.storeID = S.storeID "
+                         "where OD.deleted = 0 "
+                         "and C.deleted = 0 and S.deleted = 0 and CO.deleted = 0 "
+                         "GROUP BY 1, 2) as sub GROUP BY 1 ORDER BY 1;")
     elif filterBy == 'state':
-        mycursor.execute("SELECT DISTINCT s.state AS state, SUM(5*od.quantity) AS total_sales "
-                         "FROM Store AS s LEFT JOIN CustomerOrder AS co ON co.storeID= s.storeID "
-                         "LEFT JOIN OrderDetails AS od ON od.orderID = co.orderID "
-                         "WHERE od.deleted = 0 "
-                         "AND co.deleted = 0 "
-                         "AND s.deleted = 0 "
-                         "GROUP BY 1 ORDER BY 1;")
+        mycursor.execute("SELECT DISTINCT sub.state, sum(sub.net_sales) as net_sales "
+                         "from (SELECT DISTINCT OD.cookieID, S.state as state, "
+                         "sum(OD.quantity * 5) - sum(OD.quantity * C.cost) as net_sales "
+                         "from OrderDetails OD "
+                         "left join Cookie C on OD.cookieID = C.cookieID "
+                         "left join CustomerOrder CO on OD.orderID = CO.orderID "
+                         "left join Store S on CO.storeID = S.storeID "
+                         "where OD.deleted = 0 "
+                         "and C.deleted = 0 and S.deleted = 0 and CO.deleted = 0 "
+                         "GROUP BY 1, 2) as sub GROUP BY 1 ORDER BY 1;")
     elif filterBy == 'date':
         mycursor.execute(
-            "SELECT DISTINCT DATE_FORMAT(co.orderDate, '%y-%m-%d') AS day, SUM(5*od.quantity) AS total_sales "
-            "FROM Store as s "
-            "LEFT JOIN CustomerOrder AS co ON co.storeID= s.storeID "
-            "LEFT JOIN OrderDetails AS od ON od.orderID = co.orderID "
-            "WHERE od.deleted = 0 "
-            "AND co.deleted = 0 "
-            "AND s.deleted = 0 "
-            "GROUP BY 1 ORDER BY 1;")
+            "SELECT DISTINCT DATE_FORMAT(co.orderDate, '%y-%m-%d') AS day, SUM(quantity * 5) - SUM(quantity * cost) as net_sales "
+            "from CustomerOrder co "
+            "left join OrderDetails OD on co.orderID = OD.orderID "
+            "left join Cookie C on OD.cookieID = C.cookieID "
+            "where co.deleted = 0 and OD.deleted = 0 and C.deleted = 0 "
+            "GROUP BY 1;")
     elif filterBy == 'weekday':
         mycursor.execute(
-            "SELECT DISTINCT (DAYNAME(co.orderDate)) AS day, SUM(5*od.quantity) AS total_sales "
-            "FROM Store as s "
-            "LEFT JOIN CustomerOrder AS co ON co.storeID= s.storeID "
-            "LEFT JOIN OrderDetails AS od ON od.orderID = co.orderID "
-            "WHERE od.deleted = 0 "
-            "AND co.deleted = 0 "
-            "AND s.deleted = 0 "
-            "GROUP BY 1 ORDER BY 1;")
+            "SELECT DISTINCT (DAYNAME(co.orderDate)) AS day, SUM(quantity * 5) - SUM(quantity * cost) as net_sales "
+            "from CustomerOrder co "
+            "left join OrderDetails OD on co.orderID = OD.orderID "
+            "left join Cookie C on OD.cookieID = C.cookieID "
+            "where co.deleted = 0 and OD.deleted = 0 and C.deleted = 0 "
+            "GROUP BY 1;")
 
     else:
         print("Invalid Filter")
