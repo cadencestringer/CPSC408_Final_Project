@@ -90,19 +90,19 @@ def menuSelection():
 def printTable(tableName):
     if tableName == "Cookie":
         print("\nCOOKIE TABLE")
-        mycursor.execute("SELECT * FROM Cookie;")
+        mycursor.execute("SELECT * FROM Cookie WHERE deleted = 0;")
     elif tableName == "Customer":
         print("\nCUSTOMER TABLE")
-        mycursor.execute("SELECT * FROM Customer;")
+        mycursor.execute("SELECT * FROM Customer WHERE deleted = 0;")
     elif tableName == "CustomerOrder":
         print("\nCUSTOMER ORDER TABLE")
-        mycursor.execute("SELECT * FROM CustomerOrder;")
+        mycursor.execute("SELECT * FROM CustomerOrder WHERE deleted = 0;")
     elif tableName == "OrderDetails":
         print("\nORDER DETAILS TABLE")
-        mycursor.execute("SELECT * FROM OrderDetails;")
+        mycursor.execute("SELECT * FROM OrderDetails WHERE deleted = 0;")
     elif tableName == "Store":
         print("\nSTORE TABLE")
-        mycursor.execute("SELECT * FROM Store;")
+        mycursor.execute("SELECT * FROM Store WHERE deleted = 0;")
     field_names = [i[0] for i in mycursor.description]
     tablesData = pd.DataFrame(mycursor.fetchall())
     tablesData.columns = field_names
@@ -116,19 +116,24 @@ def printTable(tableName):
 def queryID(tableName, filterBy):
     if tableName == "Cookie":
         mycursor.execute("SELECT * FROM Cookie "
-                         "WHERE cookieID = %s;", (filterBy,))
+                         "WHERE cookieID = %s "
+                         "AND deleted = 0;", (filterBy,))
     elif tableName == "Customer":
         mycursor.execute("SELECT * FROM Customer "
-                         "WHERE customerID = %s;", (filterBy,))
+                         "WHERE customerID = %s "
+                         "AND deleted = 0;", (filterBy,))
     elif tableName == "CustomerOrder":
         mycursor.execute("SELECT * FROM CustomerOrder "
-                         "WHERE orderID = %s;", (filterBy,))
+                         "WHERE orderID = %s "
+                         "AND deleted = 0;", (filterBy,))
     elif tableName == "OrderDetails":
         mycursor.execute("SELECT * FROM OrderDetails "
-                         "WHERE detailID = %s;", (filterBy,))
+                         "WHERE detailID = %s "
+                         "AND deleted = 0;", (filterBy,))
     elif tableName == "Store":
         mycursor.execute("SELECT * FROM Store "
-                         "WHERE storeID = %s;", (filterBy,))
+                         "WHERE storeID = %s "
+                         "AND deleted = 0;", (filterBy,))
     tablesData = pd.DataFrame(mycursor.fetchall())
     print(tablesData)
     exportData(tablesData)
@@ -139,10 +144,12 @@ def queryID(tableName, filterBy):
 def queryName(tableName, filterBy):
     if tableName == "Cookie":
         mycursor.execute("SELECT * FROM Cookie "
-                         "WHERE flavor = %s;", (filterBy,))
+                         "WHERE flavor = %s "
+                         "AND deleted = 0;", (filterBy,))
     elif tableName == "Store":
         mycursor.execute("SELECT * FROM Store "
-                         "WHERE name = %s;", (filterBy,))
+                         "WHERE name = %s "
+                         "AND deleted = 0;", (filterBy,))
     tablesData = pd.DataFrame(mycursor.fetchall())
     print(tablesData)
     exportData(tablesData)
@@ -152,7 +159,8 @@ def queryName(tableName, filterBy):
 
 def queryCustFName(filterBy):
     mycursor.execute("SELECT * FROM Customer "
-                     "WHERE fName = %s;", (filterBy,))
+                     "WHERE fName = %s "
+                     "AND deleted = 0;", (filterBy,))
     tablesData = pd.DataFrame(mycursor.fetchall())
     print(tablesData)
     exportData(tablesData)
@@ -162,7 +170,8 @@ def queryCustFName(filterBy):
 
 def queryCustLName(filterBy):
     mycursor.execute("SELECT * FROM Customer "
-                     "WHERE lName = %s;", (filterBy,))
+                     "WHERE lName = %s "
+                     "AND deleted = 0;", (filterBy,))
     tablesData = pd.DataFrame(mycursor.fetchall())
     print(tablesData)
     exportData(tablesData)
@@ -280,11 +289,14 @@ def addStore():
 def integrityCheck(tableName, idNum):
     idNum = int(idNum)
     if tableName == "Customer":
-        mycursor.execute("SELECT COUNT(*) FROM Customer WHERE Customer.customerID = %s;", (idNum,))
+        mycursor.execute("SELECT COUNT(*) FROM Customer WHERE Customer.customerID = %s "
+                         "AND deleted = 0;", (idNum,))
     elif tableName == "Cookie":
-        mycursor.execute("SELECT COUNT(*) FROM Cookie WHERE Cookie.cookieID = %s;", (idNum,))
+        mycursor.execute("SELECT COUNT(*) FROM Cookie WHERE Cookie.cookieID = %s "
+                         "AND deleted = 0;", (idNum,))
     elif tableName == "Store":
-        mycursor.execute("SELECT COUNT(*) FROM Store WHERE Store.storeID = %s;", (idNum,))
+        mycursor.execute("SELECT COUNT(*) FROM Store WHERE Store.storeID = %s "
+                         "AND deleted = 0;", (idNum,))
     result = mycursor.fetchall()
     return result[0][0]
 
@@ -350,7 +362,7 @@ def addOrder():  # make sure the store exists, make sure the customer exists, ma
 def get_total_sales(filterBy):
     if filterBy == 'all':
         mycursor.execute("SELECT Sum(quantity*5) AS total_sales FROM OrderDetails "
-                         "WHERE deleted = 0;")
+                         "WHERE deleted = 0 ;")
     elif filterBy == 'store':
         mycursor.execute("SELECT DISTINCT s.name AS store_name, SUM(5*od.quantity) AS total_sales "
                          "FROM Store AS s LEFT JOIN CustomerOrder AS co ON co.storeID= s.storeID "
@@ -370,6 +382,16 @@ def get_total_sales(filterBy):
     elif filterBy == 'date':
         mycursor.execute(
             "SELECT DISTINCT DATE_FORMAT(co.orderDate, '%y-%m-%d') AS day, SUM(5*od.quantity) AS total_sales "
+            "FROM Store as s "
+            "LEFT JOIN CustomerOrder AS co ON co.storeID= s.storeID "
+            "LEFT JOIN OrderDetails AS od ON od.orderID = co.orderID "
+            "WHERE od.deleted = 0 "
+            "AND co.deleted = 0 "
+            "AND s.deleted = 0 "
+            "GROUP BY 1 ORDER BY 1;")
+    elif filterBy == 'weekday':
+        mycursor.execute(
+            "SELECT DISTINCT (DAYNAME(co.orderDate)) AS day, SUM(5*od.quantity) AS total_sales "
             "FROM Store as s "
             "LEFT JOIN CustomerOrder AS co ON co.storeID= s.storeID "
             "LEFT JOIN OrderDetails AS od ON od.orderID = co.orderID "
