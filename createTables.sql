@@ -79,6 +79,11 @@ CREATE INDEX Store_storeID_index
 
 CREATE VIEW Customer_Metrics AS SELECT sex, age FROM Customer;
 
+CREATE PROCEDURE SelectCookies()
+BEGIN
+    SELECT * FROM Cookie;
+END;
+
 # DROP INDEX Cookie_cookieID_index on Cookie;
 # DROP INDEX Customer_customerID_index on Customer;
 # DROP INDEX CustomerOrder_orderID_index on CustomerOrder;
