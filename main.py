@@ -4,8 +4,6 @@ import pandas as pd
 import pyfiglet
 from colorama import init, Fore, Back, Style
 
-# https://stackoverflow.com/questions/5010042/mysql-get-column-name-or-alias-from-query
-
 db = mysql.connector.connect(
     host="35.235.87.251",  # updated
     user="cookies_user",
@@ -62,7 +60,6 @@ def valid_phone_num(val):
 
 
 # Prints a box around the
-# https://stackoverflow.com/questions/39969064/how-to-print-a-message-box-in-python
 def printBox(text, indent=1, width=None, title=None):
     lines = text.split('\n')
     space = " " * indent
@@ -88,8 +85,6 @@ def menuSelection():
              "\n4. Update record"
              "\n5. Query with filters"
              "\n6. Display profits\n", indent=12)
-
-    # https: // stackoverflow.com / questions / 287871 / how - to - print - colored - text - to - the - terminal
 
     choice = input("\nPlease enter 1-6, or 'Exit' to leave the database: ")
     while not validInput(choice, 6) and not choice.lower() == "exit":
@@ -556,10 +551,11 @@ def runSelection(choice):
                       "\n3. Customer Order"
                       "\n4. Order Details"
                       "\n5. Store"
+                      "\nOr, enter 6 to display Customer Metrics"
                       "\nPlease enter your selection:", indent=12)
         table = input("Please enter your selection:")
-        while not validInput(table, 5):
-            table = input("Please enter a number 1-5:")
+        while not validInput(table, 6):
+            table = input("Please enter a number 1-6:")
         if table == "1":
             printTable("Cookie")
         elif table == "2":
@@ -570,6 +566,8 @@ def runSelection(choice):
             printTable("OrderDetails")
         elif table == "5":
             printTable("Store")
+        elif table == "6":
+            queryCustData()
 
     # Insert a record
     elif choice == 2:
