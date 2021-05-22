@@ -8,6 +8,8 @@ DROP TABLE Customer;
 DROP TABLE Store;
 DROP TABLE Cookie;
 
+# Creates tables
+
 CREATE TABLE Cookie
 (
     cookieID TINYINT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -32,6 +34,7 @@ CREATE TABLE Store
     name     VARCHAR(50)                   NOT NULL,
     state    VARCHAR(30)                   NOT NULL,
     phoneNum VARCHAR(25)                   NOT NULL,
+    zipcode  VARCHAR(5)                    NOT NULL,
     deleted  BOOLEAN                       NOT NULL
 );
 
@@ -62,6 +65,8 @@ CREATE TABLE OrderDetails
 );
 
 
+# Indexes
+
 CREATE INDEX Cookie_cookieID_index
  on Cookie (cookieID);
 
@@ -79,16 +84,40 @@ CREATE INDEX Store_storeID_index
 
 CREATE VIEW Customer_Metrics AS SELECT sex, age FROM Customer;
 
+
+# Stored Procedures:
+
 CREATE PROCEDURE SelectCookies()
 BEGIN
     SELECT * FROM Cookie;
 END;
 
-# DROP INDEX Cookie_cookieID_index on Cookie;
-# DROP INDEX Customer_customerID_index on Customer;
-# DROP INDEX CustomerOrder_orderID_index on CustomerOrder;
-# DROP INDEX OrderDetails_detailID_index on OrderDetails;
-# DROP INDEX Store_storeID_index on Store;
-#
-# INSERT INTO Cookie (flavor,cost,deleted) VALUES('chocolate', 5,0);
+CREATE PROCEDURE SelectCookieName(IN cookieName VARCHAR(50))
+BEGIN
+    SELECT * FROM Cookie
+    WHERE flavor = cookieName AND deleted = 0;
+END;
 
+CREATE PROCEDURE SelectStoreName(IN storeName VARCHAR(50))
+BEGIN
+    SELECT * FROM Store
+    WHERE name = storeName AND deleted = 0;
+END;
+
+CREATE PROCEDURE SelectCustFName(IN name VARCHAR(30))
+BEGIN
+    SELECT * FROM Customer
+    WHERE fName = name AND deleted = 0;
+END;
+
+CREATE PROCEDURE SelectCustLName(IN name VARCHAR(30))
+BEGIN
+    SELECT * FROM Customer
+    WHERE lName = name AND deleted = 0;
+END;
+
+CREATE PROCEDURE SelectCustLName(IN name VARCHAR(30))
+BEGIN
+    SELECT * FROM Customer
+    WHERE lName = name AND deleted = 0;
+END;
