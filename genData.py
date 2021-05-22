@@ -76,12 +76,13 @@ def genStores():
     fake = Faker()
     stores_csv = open(store_file_name, 'w')
     writer = csv.writer(stores_csv)
-    writer.writerow(["name", "state", "phoneNum", "deleted"])
+    writer.writerow(["name", "state", "phoneNum", "zipcode", "deleted"])
 
     for i in range(0, store_nrows):  # used to be one row
         writer.writerow([fake.city(),
                     fake.state(),
                     fake.phone_number(),
+                    fake.zipcode(),
                     0])
 
 # Generates order details data
@@ -92,7 +93,7 @@ def genOrderDetails():
 
     for i in range(0, order_details_nrows):
         orderID = random.randrange(1, (customer_order_nrows+1))
-        cookieID = random.randrange(1, 8)
+        cookieID = random.randrange(1, 41)
         quantity = random.randrange(1, 11)  # they can only buy up to 10 cookies
         writer.writerow([orderID, cookieID, quantity, 0])
 
