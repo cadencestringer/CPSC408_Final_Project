@@ -4,9 +4,9 @@ import genData as gd
 
 # Connect to the database in GCP
 db = mysql.connector.connect(
-    host="localhost", # updated
-    user="root",
-    password="Jameskis13!Kaleo432!",
+    host="35.235.87.251", # updated
+    user="cookies_user",
+    password="gloopybloopy",
     database="Cookies"
 )
 mycursor = db.cursor()
@@ -44,8 +44,8 @@ def importStores(fileName):
     with open(fileName) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            mycursor.execute('INSERT INTO Store(name, state, phoneNum, deleted)'
-                             'VALUES (%s,%s,%s,%s);', (row['name'], row['state'], row['phoneNum'], row['deleted']))
+            mycursor.execute('INSERT INTO Store(name, state, phoneNum, zipcode, deleted)'
+                             'VALUES (%s,%s,%s,%s,%s);', (row['name'], row['state'], row['phoneNum'], row['zipcode'], row['deleted']))
             db.commit()
 
 # Imports the order details data into the table
@@ -67,3 +67,4 @@ def importData():
     importOrderDetails(gd.order_details_file_name)
 
 importData()
+
